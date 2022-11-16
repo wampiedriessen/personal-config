@@ -23,3 +23,8 @@
     path: "{{ ansible_env.HOME }}/.zshrc"
     regexp: '^plugins='
     line: "plugins={{ zsh_plugins }}"
+
+- name: Configure ZSH as default
+  ansible.builtin.user:
+    name: "{{ ansible_env.USER }}"
+    shell: /usr/bin/zsh
