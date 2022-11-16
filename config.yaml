@@ -1,9 +1,9 @@
 ---
 - hosts: all
   tasks:
-    - import_tasks: 00-packages.yaml
-    - import_tasks: 01-zsh.yaml
-    - import_tasks: 02-rust.yaml
+    - import_tasks: tasks/00-packages.yaml
+    - import_tasks: tasks/01-zsh.yaml
+    - import_tasks: tasks/02-rust.yaml
   vars:
     zsh_theme: 'nanotech'
     zsh_plugins: '(git rust)'
