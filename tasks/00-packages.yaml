@@ -1,0 +1,14 @@
+---
+- name: Install all relevant packages
+  ansible.builtin.apt:
+    name:
+      - zsh
+      - git
+      - vim
+      - wget
+      - tmux
+      - unzip
+      - python3
+      - python3-pip
+    state: latest
+    update_cache: yes
