@@ -10,6 +10,7 @@
   ansible.builtin.shell:
     cmd: sh -s -- -y
     stdin: "{{ ohmyzsh_installscript.content }}"
+    creates: "/home/{{ ansible_user}}/.oh-my-zsh"
 
 - name: Configure ZSH theme
   ansible.builtin.lineinfile:
