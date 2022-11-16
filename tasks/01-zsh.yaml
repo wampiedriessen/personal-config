@@ -10,16 +10,16 @@
   ansible.builtin.shell:
     cmd: sh -s -- -y
     stdin: "{{ ohmyzsh_installscript.content }}"
-    creates: "/home/{{ ansible_user}}/.oh-my-zsh"
+    creates: "{{ ansible_env.HOME }}/.oh-my-zsh"
 
 - name: Configure ZSH theme
   ansible.builtin.lineinfile:
-    path: "/home/{{ ansible_user }}/.zshrc"
+    path: "{{ ansible_env.HOME }}/.zshrc"
     regexp: '^ZSH_THEME='
     line: "ZSH_THEME=\"{{ zsh_theme }}\""
 
 - name: Configure ZSH plugins
   ansible.builtin.lineinfile:
-    path: "/home/{{ ansible_user }}/.zshrc"
+    path: "{{ ansible_env.HOME }}/.zshrc"
     regexp: '^plugins='
     line: "plugins={{ zsh_plugins }}"
