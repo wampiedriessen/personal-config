@@ -1,10 +1,5 @@
 ---
-- name: Install zsh
-  ansible.builtin.apt:
-    name: zsh
-    state: present
-    update_cache: yes
-
+# This script assumes the 'zsh' package has already been installed by 00-packages.yaml
 - name: Download oh-my-zsh installscript
   ansible.builtin.uri:
     url: https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh
