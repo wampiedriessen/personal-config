@@ -1,0 +1,13 @@
+---
+- hosts: all
+  tasks:
+    - import_tasks: 01-zsh.yaml
+    - import_tasks: 02-rust.yaml
+  vars:
+    zsh_theme: 'nanotech'
+    zsh_plugins: '(git rust)'
+  # vars_prompt:
+  #   - name: wsl_ssh_bridge
+  #     prompt: Install bridge to Windows' SSH-agent? (voor yubikey in WSL)?
+  #     private: false
+  #     default: false

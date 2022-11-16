@@ -1,0 +1,29 @@
+---
+- name: Install zsh
+  ansible.builtin.apt:
+    name: zsh
+    state: present
+    update_cache: yes
+
+- name: Download oh-my-zsh installscript
+  ansible.builtin.uri:
+    url: https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    return_content: yes
+  register: ohmyzsh_installscript
+
+- name: Install oh-my-zsh
+  ansible.builtin.shell:
+    cmd: sh -s -- -y
+    stdin: "{{ ohmyzsh_installscript.content }}"
+
+- name: Configure ZSH theme
+  ansible.builtin.lineinfile:
+    path: "{{ homedir }}/.zshrc"
+    regexp: '^ZSH_THEME='
+    line: "ZSH_THEME=\"{{ zsh_theme }}\""
+
+- name: Configure ZSH plugins
+  ansible.builtin.lineinfile:
+    path: "{{ homedir }}/.zshrc"
+    regexp: '^plugins='
+    line: "plugins={{ zsh_plugins }}"
