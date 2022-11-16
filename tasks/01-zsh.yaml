@@ -13,12 +13,12 @@
 
 - name: Configure ZSH theme
   ansible.builtin.lineinfile:
-    path: "{{ homedir }}/.zshrc"
+    path: "/home/{{ ansible_user }}/.zshrc"
     regexp: '^ZSH_THEME='
     line: "ZSH_THEME=\"{{ zsh_theme }}\""
 
 - name: Configure ZSH plugins
   ansible.builtin.lineinfile:
-    path: "{{ homedir }}/.zshrc"
+    path: "/home/{{ ansible_user }}/.zshrc"
     regexp: '^plugins='
     line: "plugins={{ zsh_plugins }}"
