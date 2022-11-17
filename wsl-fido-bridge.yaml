@@ -1,0 +1,73 @@
+---
+- name: "Compile windows-fido-bridge, and ensure its registration into SSH config"
+  hosts: all
+  vars_prompt:
+    - name: windows_username
+      prompt: "Voer hier je windows-username in. Da's nodig voor de symlink"
+      private: false
+  tasks:
+    - name: Install build essentials
+      ansible.builtin.apt:
+        name:
+          - build-essential
+          - cmake
+          - g++-mingw-w64-x86-64
+          - git
+        state: present
+      become: true
+
+    - name: Create winhome link
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/winhome"
+        state: link
+        src: "/mnt/c/Users/{{ windows_username }}"
+
+    - name: Create .wsl folder (for .exe files otherwise they be slow)
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/winhome/.wsl"
+        state: directory
+
+    - name: Clone repo
+      ansible.builtin.git:
+        repo: https://github.com/mgbowen/windows-fido-bridge.git
+        dest: /tmp/windows-fido-bridge
+      register: git_checkout
+
+    - name: Create build folder
+      ansible.builtin.file:
+        path: /tmp/windows-fido-bridge/build
+        state: directory
+
+    - name: Cmake Configure
+      ansible.builtin.command: cmake -DCMAKE_BUILD_TYPE=Release -DSK_API_VERSION=9 ..
+      args:
+        chdir: /tmp/windows-fido-bridge/build
+
+    - name: Compile stuff
+      ansible.builtin.command: make
+      args:
+        chdir: /tmp/windows-fido-bridge/build
+
+    - name: Install stuff
+      ansible.builtin.command: make install
+      args:
+        chdir: /tmp/windows-fido-bridge/build
+      become: true
+
+    - name: Move exe file to windows
+      ansible.builtin.command: "mv /usr/local/lib/windowsfidobridge.exe {{ ansible_env.HOME }}/winhome/.wsl/windowsfidobridge.exe"
+      become: true
+
+    - name: Create link where exe used to be
+      ansible.builtin.file:
+        path: "/usr/local/lib/windowsfidobridge.exe"
+        state: link
+        src: "{{ ansible_env.HOME }}/winhome/.wsl/windowsfidobridge.exe"
+      become: true
+
+    - name: Register windows-fido-bridge with user's ssh config
+      ansible.builtin.blockinfile:
+        path: "{{ ansible_env.HOME }}/.ssh/config"
+        block: | 
+          Host *
+              SecurityKeyProvider /usr/local/lib/libwindowsfidobridge.so
