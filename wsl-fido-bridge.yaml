@@ -66,9 +66,15 @@
         src: "{{ ansible_env.HOME }}/winhome/.wsl/windowsfidobridge.exe"
       become: true
 
+    - name: Ensure .ssh directory
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.ssh"
+        state: directory
+
     - name: Register windows-fido-bridge with user's ssh config
       ansible.builtin.blockinfile:
         path: "{{ ansible_env.HOME }}/.ssh/config"
+        create: yes
         block: | 
           Host *
               SecurityKeyProvider /usr/local/lib/libwindowsfidobridge.so
