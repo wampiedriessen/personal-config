@@ -4,6 +4,7 @@
     - import_tasks: tasks/00-packages.yaml
     - import_tasks: tasks/01-zsh.yaml
     - import_tasks: tasks/02-rust.yaml
+    - import_tasks: tasks/80-wsl-fido-bridge.yaml
   vars:
     zsh_theme: 'nanotech'
     zsh_plugins: '(git rust)'

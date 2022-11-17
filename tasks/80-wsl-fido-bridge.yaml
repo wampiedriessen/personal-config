@@ -1,0 +1,36 @@
+---
+- name: Install build essentials
+  ansible.builtin.apt:
+    name:
+      - build-essential
+      - cmake
+      - g++-mingw-w64-x86-64
+      - git
+    state: present
+  become: yes
+
+- name: Clone repo
+  ansible.builtin.git:
+    repo: https://github.com/mgbowen/windows-fido-bridge.git
+    dest: /tmp/windows-fido-bridge
+  register: git_checkout
+
+- name: Create build folder
+  ansible.builtin.file:
+    path: /tmp/windows-fido-bridge/build
+    state: directory
+
+- name: Cmake Configure
+  ansible.builtin.command: cmake -DCMAKE_BUILD_TYPE=Release -DSK_API_VERSION=9 ..
+  args:
+    chdir: /tmp/windows-fido-bridge/build
+
+- name: Compile stuff
+  ansible.builtin.command: make
+  args:
+    chdir: /tmp/windows-fido-bridge/build
+
+- name: Install stuff
+  ansible.builtin.command: make install
+  become: yes
+
