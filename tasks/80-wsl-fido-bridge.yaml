@@ -1,4 +1,13 @@
 ---
+- pause:
+    prompt: Enter your windows username. Leaving it empty will end this play.
+  register: windows_username
+
+- name: End the play if username is empty
+  ansible.builtin.meta: end_host
+  when:
+    - windows_username.user_input == ''
+
 - name: Install build essentials
   ansible.builtin.apt:
     name:
@@ -8,6 +17,17 @@
       - git
     state: present
   become: yes
+
+- name: Create winhome link
+  ansible.builtin.file:
+    src: "{{ ansible_env.HOME }}/winhome"
+    dest: "/mnt/c/Users/{{ windows_username.user_input }}/"
+    state: link
+
+- name: Create .wsl folder (for .exe files otherwise they be slow)
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/winhome/.wsl"
+    state: directory
 
 - name: Clone repo
   ansible.builtin.git:
@@ -30,9 +50,14 @@
   args:
     chdir: /tmp/windows-fido-bridge/build
 
+- name: Create link where exe file is going to be
+  ansible.builtin.file:
+    src: "/usr/local/lib/windowsfidobridge.exe"
+    dest: "{{ ansible_env.HOME }}/winhome/.wsl/windowsfidobridge.exe"
+    state: link
+
 - name: Install stuff
   ansible.builtin.command: make install
   args:
     chdir: /tmp/windows-fido-bridge/build
   become: yes
-
