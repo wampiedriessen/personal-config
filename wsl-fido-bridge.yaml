@@ -57,6 +57,7 @@
     - name: Move exe file to windows
       ansible.builtin.command: "mv /usr/local/lib/windowsfidobridge.exe {{ ansible_env.HOME }}/winhome/.wsl/windowsfidobridge.exe"
       become: true
+      failed_when: false
 
     - name: Create link where exe used to be
       ansible.builtin.file:
