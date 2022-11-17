@@ -50,17 +50,19 @@
   args:
     chdir: /tmp/windows-fido-bridge/build
 
-- name: Create link where exe file is going to be
-  ansible.builtin.file:
-    path: "/usr/local/lib/windowsfidobridge.exe"
-    state: link
-    src: "{{ ansible_env.HOME }}/winhome/.wsl/windowsfidobridge.exe"
-    force: true
-    follow: false
-  become: true
-
 - name: Install stuff
   ansible.builtin.command: make install
   args:
     chdir: /tmp/windows-fido-bridge/build
+  become: true
+
+- name: Move exe file to windows
+  ansible.builtin.command: "mv /usr/local/lib/windowsfidobridge.exe {{ ansible_env.HOME }}/winhome/.wsl/windowsfidobridge.exe"
+  become: true
+
+- name: Create link where exe used to be
+  ansible.builtin.file:
+    path: "/usr/local/lib/windowsfidobridge.exe"
+    state: link
+    src: "{{ ansible_env.HOME }}/winhome/.wsl/windowsfidobridge.exe"
   become: true
