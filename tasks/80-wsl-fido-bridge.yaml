@@ -56,6 +56,7 @@
     state: link
     src: "{{ ansible_env.HOME }}/winhome/.wsl/windowsfidobridge.exe"
     force: true
+    follow: false
   become: true
 
 - name: Install stuff
