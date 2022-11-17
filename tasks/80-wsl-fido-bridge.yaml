@@ -22,7 +22,7 @@
   ansible.builtin.file:
     path: "{{ ansible_env.HOME }}/winhome"
     state: link
-    src: "/mnt/c/Users/{{ windows_username.user_input }}/"
+    src: "/mnt/c/Users/{{ windows_username.user_input }}"
 
 - name: Create .wsl folder (for .exe files otherwise they be slow)
   ansible.builtin.file:
@@ -56,6 +56,7 @@
     state: link
     src: "{{ ansible_env.HOME }}/winhome/.wsl/windowsfidobridge.exe"
     force: true
+  become: true
 
 - name: Install stuff
   ansible.builtin.command: make install
