@@ -32,5 +32,7 @@
 
 - name: Install stuff
   ansible.builtin.command: make install
+  args:
+    chdir: /tmp/windows-fido-bridge/build
   become: yes
 
